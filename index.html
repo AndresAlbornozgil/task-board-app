@@ -22,9 +22,43 @@
   </header>
   <div class="container">
     <div class="text-center mb-5">
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal">Add Task</button>
+      <!-- Button to trigger modal -->
+      <button id="addTask" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal">Add Task</button>
     </div>
+
     <!-- Todo: Create a modal with a form to add tasks -->
+    <!-- Modal -->
+    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modal-title">Add Task</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+            <form class="row g-3">
+              <div class="col-md-6">
+                <label for="taskTitle" class="form-label">Task Title</label>
+                <input type="email" class="form-control" id="taskTitle">
+              </div>
+              <div class="col-md-6">
+                <label for="taskDueDate" class="form-label">Task Due Date</label>
+                <input type="password" class="form-control" id="taskDueDate">
+              </div>
+              <div class="col-12">
+                <label for="taskDescription" class="form-label">Task Description</label>
+                <input type="text" class="form-control pb-5" id="taskDescription">
+              </div>
+              <div id="TaskSubmit" class="text-center pt-4 pb-2">
+              <button id="submitTaskButton" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal">Add Task</button>
+              </div>
+            </form> 
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <div class="row swim-lanes text-center justify-content-between">
       <div class="col-12 col-lg-4 d-flex">
         <div id="to-do" class="card border-light mb-3 lane flex-grow-1">
