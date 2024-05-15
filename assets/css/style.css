@@ -15,4 +15,10 @@ body {
   cursor: grab;
 }
 
-/* My modifications below */
+.card-danger {
+  border-color: red;
+}
+
+.card-warning {
+  border-color: yellow;
+}
