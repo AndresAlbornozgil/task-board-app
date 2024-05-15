@@ -19,7 +19,7 @@ Deployed on [Github Pages](https://andresalbornozgil.github.io/task-board-app/)
 
 Once at the landing page you will see a green button to add a task in the center/upper section of the page. If you click this "add task" button, you will be prompted to input a task, deadline date, and description of the task. Once you complete the form, click on the "add task" buttom at the bottom of the form. Then you task will appear in the form of a card in the left side of the screen inside the "to do" column.
 
-From this point forward, you can either create more tasks and even drag the cards containing the tasks from one column to another. Notice the cards will change colors depending on the column they are and the task's corresponding deadline.
+From this point forward, you can either create more tasks and even drag the cards containing the tasks from one column to another. Notice the cards will change colors depending on the column they are as well as the task's corresponding deadline.
 
 ![Image of Task Board App](assets/activity/task-board-app_cover.JPG)
 
