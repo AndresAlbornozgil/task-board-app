@@ -100,7 +100,8 @@ $(document).ready(function () {
   }
 
   // Initialize the page
-  renderTaskList(getTasksFromLocalStorage());
+  const tasks = getTasksFromLocalStorage();
+  renderTaskList(tasks);
 
   // Make swim lanes droppable
   $('.lane').droppable({
