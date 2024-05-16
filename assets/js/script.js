@@ -1,108 +1,127 @@
-// Retrieve tasks and nextId from localStorage
-let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
-let nextId = JSON.parse(localStorage.getItem("nextId")) || 1;
-
-// Create a function to generate a unique task id
-function generateTaskId() {
-  const id = nextId;
-  nextId++;
-  localStorage.setItem("nextId", JSON.stringify(nextId));
-  return id;
-}
-
-// Create a function to create a task card
-function createTaskCard(task) {
-  const card = $('<div>')
-    .addClass('card task-card')
-    .attr('data-task-id', task.id)
-    .addClass(task.taskDueDate ? (dayjs(task.taskDueDate).isBefore(dayjs(), 'day') ? 'card-danger' : (dayjs(task.taskDueDate).diff(dayjs(), 'day') <= 2 ? 'card-warning' : '')) : '');
-
-  const cardTitle = $('<h5>').addClass('card-title').text(task.taskTitle);
-  const dueDate = $('<p>').addClass('due-date').text(task.taskDueDate);
-  const cardBody = $('<p>').addClass('card-body').text(task.taskDescription);
-  const cardButton = $('<button>')
-    .addClass('btn btn-danger delete-button')
-    .text('Delete');
-
-  card.append(cardTitle, dueDate, cardBody, cardButton);
-  $('#todo-cards').append(card);
-}
-
-// Create a function to render the task list
-function renderTaskList() {
-  $('#todo-cards').empty();
-  $('#in-progress-cards').empty();
-  $('#done-cards').empty();
-
-  taskList.forEach(task => {
-    createTaskCard(task);
-  });
-}
-
-// Create a function to handle adding a new task
-function handleAddTask(event) {
-  event.preventDefault();
-
-  const taskTitle = $('#taskTitle').val().trim();
-  const taskDueDate = $('#taskDueDate').val().trim();
-  const taskDescription = $('#taskDescription').val().trim();
-
-  if (!taskTitle) {
-    alert('Task title is required.');
-    return;
+$(document).ready(function () {
+  // Function to retrieve tasks from localStorage
+  function getTasksFromLocalStorage() {
+    return JSON.parse(localStorage.getItem("tasks")) || [];
   }
 
-  const task = {
-    id: generateTaskId(),
-    taskTitle,
-    taskDueDate,
-    taskDescription,
-  };
+  // Function to generate a unique task id
+  function generateTaskId() {
+    let nextId = JSON.parse(localStorage.getItem("nextId")) || 1;
+    localStorage.setItem("nextId", JSON.stringify(nextId + 1));
+    return nextId;
+  }
 
-  taskList.push(task);
-  localStorage.setItem("tasks", JSON.stringify(taskList));
+  // Function to render a task card
+  function renderTaskCard(task) {
+    const card = $('<div>')
+      .addClass('card task-card')
+      .attr('data-task-id', task.id)
+      .addClass(task.taskDueDate ? (dayjs(task.taskDueDate).isBefore(dayjs(), 'day') ? 'card-danger' : (dayjs(task.taskDueDate).diff(dayjs(), 'day') <= 2 ? 'card-warning' : '')) : '');
 
-  createTaskCard(task);
+    const cardTitle = $('<h5>').addClass('card-title').text(task.taskTitle);
+    const cardBody = $('<p>').addClass('card-body').text(task.taskDescription);
+    const dueDate = $('<p>').addClass('due-date').text(task.taskDueDate);
+    const cardButton = $('<button>')
+      .addClass('btn btn-danger delete-button mx-auto')
+      .css('width', '80px') // Narrow the width of the delete button
+      .text('Delete');
 
-  $('#formModal').modal('hide');
-  $('#taskTitle').val('');
-  $('#taskDueDate').val('');
-  $('#taskDescription').val('');
-}
+    card.append(cardTitle, cardBody, dueDate, cardButton);
+    return card;
+  }
 
-// Create a function to handle deleting a task
-function handleDeleteTask() {
-  const taskId = $(this).closest('.task-card').attr('data-task-id');
-  taskList = taskList.filter(task => task.id != taskId);
-  localStorage.setItem("tasks", JSON.stringify(taskList));
-  renderTaskList();
-}
+  // Function to render the task list
+  function renderTaskList(tasks) {
+    $('#todo-cards').empty();
+    $('#in-progress-cards').empty();
+    $('#done-cards').empty();
 
-// Create a function to handle dropping a task into a new status lane
-function handleDrop(event, ui) {
-  const taskId = ui.draggable.attr('data-task-id');
-  const targetLane = $(this).attr('id');
-  const taskIndex = taskList.findIndex(task => task.id == taskId);
-  taskList[taskIndex].lane = targetLane;
-  localStorage.setItem("tasks", JSON.stringify(taskList));
-}
+    tasks.forEach(task => {
+      const card = renderTaskCard(task);
+      $('#' + task.lane + '-cards').append(card);
+    });
 
-// Initialize the page
-$(document).ready(function () {
-  renderTaskList();
+    makeCardsDraggable();
+  }
 
-  // Make task cards draggable
-  $('.task-card').draggable({
-    revert: true,
-    revertDuration: 0,
-    containment: '.swim-lanes',
-    cursor: 'grabbing',
-    stack: '.task-card',
-  });
+  // Function to make task cards draggable
+  function makeCardsDraggable() {
+    $('.task-card').draggable({
+      revert: 'invalid',
+      containment: '.swim-lanes', // Restrict dragging within swim-lanes
+      cursor: 'grabbing',
+      stack: '.task-card',
+    });
+  }
+
+  // Function to handle adding a new task
+  function handleAddTask(event) {
+    event.preventDefault();
+
+    const taskTitle = $('#taskTitle').val().trim();
+    const taskDueDate = $('#taskDueDate').val().trim();
+    const taskDescription = $('#taskDescription').val().trim();
+
+    if (!taskTitle) {
+      alert('Task title is required.');
+      return;
+    }
+
+    const task = {
+      id: generateTaskId(),
+      taskTitle,
+      taskDueDate,
+      taskDescription,
+      lane: 'todo', // Default lane is 'todo'
+    };
+
+    const tasks = getTasksFromLocalStorage();
+    tasks.push(task);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    const card = renderTaskCard(task);
+    $('#todo-cards').append(card);
+
+    $('#formModal').modal('hide');
+    $('#taskTitle').val('');
+    $('#taskDueDate').val('');
+    $('#taskDescription').val('');
+
+    makeCardsDraggable();
+  }
+
+  // Function to handle deleting a task
+  function handleDeleteTask() {
+    const taskId = $(this).closest('.task-card').attr('data-task-id');
+    let tasks = getTasksFromLocalStorage();
+    tasks = tasks.filter(task => task.id != taskId);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    renderTaskList(tasks);
+  }
+
+  // Initialize the page
+  renderTaskList(getTasksFromLocalStorage());
 
   // Make swim lanes droppable
   $('.lane').droppable({
-    drop: handleDrop,
+    drop: function (event, ui) {
+      const taskId = ui.draggable.attr('data-task-id');
+      const targetLane = $(this).attr('id');
+      let tasks = getTasksFromLocalStorage();
+
+      // Update task's lane in localStorage
+      const taskIndex = tasks.findIndex(task => task.id == taskId);
+      tasks[taskIndex].lane = targetLane;
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+
+      // If task is moved to "Done" column, change background color to white
+      if (targetLane === 'done') {
+        ui.draggable.removeClass('card-warning card-danger').css('background-color', 'white');
+      } else {
+        ui.draggable.css('background-color', '');
+      }
+    },
+    containment: '.swim-lanes', // Restrict dropping within swim-lanes
   });
 
   // Make the due date field a date picker

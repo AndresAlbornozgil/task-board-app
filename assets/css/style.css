@@ -9,6 +9,12 @@ body {
 
 .task-card {
   margin: 0 auto;
+  padding: 10px 0 20px 0;
+}
+
+.task-card h5 {
+  border-bottom: black solid 1px;
+  padding-bottom: 10px;
 }
 
 .task-card:hover {
@@ -21,4 +27,12 @@ body {
 
 .card-warning {
   border-color: yellow;
+}
+
+.task-card.card-warning {
+  background-color: #fff3cd !important;
+}
+
+.task-card.card-danger {
+  background-color: #f8d7da !important;
 }
