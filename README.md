@@ -15,7 +15,7 @@ A simple task board application that allows a team to manage project tasks by mo
 This project does not require an installation. However, you are welcome to to either clone the repository and access the project files or fork the repo.
 
 ## Usage
-Deployed on [Github Pages](https://andresalbornozgil.github.io/task-board-app/)
+Deployed on [GitHub Pages](https://andresalbornozgil.github.io/task-board-app/)
 
 Once at the landing page you will see a green button to add a task in the center/upper section of the page. If you click this "Add Task" button, you will be prompted to input a task, deadline date, and description of the task. Once you complete the form, click on the "Add Task" buttom at the bottom of the form. Then you task will appear in the form of a card in the left side of the screen inside the "To Do" column.
 
